@@ -2,11 +2,15 @@
         run: |
           pod install
 
-      # 👇 ここから追加：最新のXcodeに対応させるための自動修正スクリプト
-      - name: Fix Pods Compatibility for modern Xcode
+      # 👇 ここから上書き追加：Pods全体の古いターゲット設定を一括でiOS 13に書き換える
+      - name: Force Pods Compatibility to modern iOS
         run: |
-          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 9.0/IPHONEOS_DEPLOYMENT_TARGET = 13.0/g' 体当たりゲーム.xcodeproj/project.pbxproj || true
-          pod repo update --verbose || true
+          if [ -f "Pods/Pods.xcodeproj/project.pbxproj" ]; then
+            echo "Updating Pods deployment target..."
+            sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*/IPHONEOS_DEPLOYMENT_TARGET = 13.0/g' Pods/Pods.xcodeproj/project.pbxproj
+          else
+            echo "Pods project not found, skipping."
+          fi
 
       - name: Build Application
         run: |
@@ -14,5 +18,6 @@
                      -workspace "体当たりゲーム.xcworkspace" \
                      -scheme "体当たりゲーム" \
                      -sdk iphonesimulator \
+                     -arch x86_64 \
                      CODE_SIGNING_ALLOWED=NO \
                      CODE_SIGNING_REQUIRED=NO
