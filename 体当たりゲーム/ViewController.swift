@@ -229,8 +229,7 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
     }
         
     deinit {
-        体当たりゲーム.webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress))
-    }
+        体当たりゲーム.webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: UnsafeMutableRawPointer?(nil))
 }
 
 extension UIColor {
