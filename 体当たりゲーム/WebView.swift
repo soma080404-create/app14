@@ -1,3 +1,4 @@
+typealias 体当たりゲーム = ViewController // 👈 これをファイルの最上部に追加
 import UIKit
 import WebKit
 import AuthenticationServices
