@@ -1,6 +1,6 @@
 import UIKit
 //import FirebaseCore
-import FirebaseMessaging
+//import FirebaseMessaging
 
 
 @UIApplicationMain
