@@ -1,0 +1,37 @@
+name: iOS Cloud Build
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: macos-14
+
+    steps:
+    # ステップ1: コードの取得
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # ステップ2: クラウド環境のXcodeを決定
+    - name: Set up Xcode version
+      run: sudo xcode-select -s /Applications/Xcode_15.4.app
+
+    # ステップ3: CocoaPodsの依存関係をクラウド上でインストール
+    # これにより、手元がオフラインでもクラウドが代わりにライブラリをダウンロードします
+    - name: Install Pods
+      run: |
+        pod install
+
+    # ステップ4: クラウド環境での自動ビルド（ワークスペース指定）
+    - name: Build Application
+      run: |
+        xcodebuild -workspace "体当たりゲーム.xcworkspace" \
+                   -scheme "体当たりゲーム" \
+                   -sdk iphoneos \
+                   -configuration Release \
+                   CODE_SIGNING_ALLOWED=NO \
+                   CODE_SIGNING_REQUIRED=NO \
+                   clean build
