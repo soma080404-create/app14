@@ -6,7 +6,7 @@ target '体当たりゲーム' do
   use_frameworks!
 
   # Add the pod for Firebase Cloud Messaging
-  pod 'Firebase/Messaging'
+  # pod 'Firebase/Messaging'
 
 end
 
