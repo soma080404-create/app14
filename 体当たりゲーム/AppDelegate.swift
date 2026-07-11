@@ -15,7 +15,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //FirebaseApp.configure()
 
         // [START set_messaging_delegate]
-        Messaging.messaging().delegate = self
+        // 👇 Firebaseを無効化したため、以下の行の先頭に // を追加してコメントアウトします
+        // Messaging.messaging().delegate = self
         // [END set_messaging_delegate]
         // Register for remote notifications. This shows a permission dialog on first run, to
         // show the dialog at a more appropriate time move this registration accordingly.
@@ -128,16 +129,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     // [END ios_10_message_handling]
 
-    extension AppDelegate : MessagingDelegate {
-      // [START refresh_token]
-      func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        print("Firebase registration token: \(String(describing: fcmToken))")
-        
-        let dataDict:[String: String] = ["token": fcmToken ?? ""]
-        NotificationCenter.default.post(name: Notification.Name("FCMToken"), object: nil, userInfo: dataDict)
-        handleFCMToken()
-        // TODO: If necessary send token to application server.
-        // Note: This callback is fired at each app startup and whenever a new token is generated.
-      }
-      // [END refresh_token]
-    }
+    // 👇 FirebaseのMessagingが存在しないため、このextensionブロック全体をすべてコメントアウト（無効化）します
+    // extension AppDelegate : MessagingDelegate {
+    //   // [START refresh_token]
+    //   func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+    //     print("Firebase registration token: \(String(describing: fcmToken))")
+    //     
+    //     let dataDict:[String: String] = ["token": fcmToken ?? ""]
+    //     NotificationCenter.default.post(name: Notification.Name("FCMToken"), object: nil, userInfo: dataDict)
+    //     handleFCMToken()
+    //     // TODO: If necessary send token to application server.
+    //     // Note: This callback is fired at each app startup and whenever a new token is generated.
+    //   }
+    //   // [END refresh_token]
+    // }
