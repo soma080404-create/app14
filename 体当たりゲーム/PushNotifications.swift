@@ -30,10 +30,14 @@ func handleSubscribeTouch(message: WKScriptMessage) {
     if (subscribeMessages.count > 0){
         let _message = subscribeMessages[0]
         if (_message.unsubscribe) {
-            Messaging.messaging().unsubscribe(fromTopic: _message.topic) { error in }
+            // 👇 Firebase無効化に伴い、以下の命令をコメントアウトします
+            // Messaging.messaging().unsubscribe(fromTopic: _message.topic) { error in }
+            print("Firebase Unsubscribe skipped for topic: \(_message.topic)")
         }
         else {
-            Messaging.messaging().subscribe(toTopic: _message.topic) { error in }
+            // 👇 Firebase無効化に伴い、以下の命令をコメントアウトします
+            // Messaging.messaging().subscribe(toTopic: _message.topic) { error in }
+            print("Firebase Subscribe skipped for topic: \(_message.topic)")
         }
     }
     
@@ -148,6 +152,8 @@ func checkViewAndEvaluate(event: String, detail: String) {
 
 func handleFCMToken(){
     DispatchQueue.main.async(execute: {
+        // 👇 Firebase無効化に伴い、以下のトークン取得処理ブロック全体をコメントアウトします
+        /*
         Messaging.messaging().token { token, error in
             if let error = error {
                 print("Error fetching FCM registration token: \(error)")
@@ -157,6 +163,10 @@ func handleFCMToken(){
                 checkViewAndEvaluate(event: "push-token", detail: "'\(token)'")
             }
         }   
+        */
+        // 代替処理として、エラー扱いのコールバックをWebViewに返してフリーズを防ぎます
+        print("Firebase is disabled. Skipping token fetch.")
+        checkViewAndEvaluate(event: "push-token", detail: "DISABLED")
     })
 }
 
