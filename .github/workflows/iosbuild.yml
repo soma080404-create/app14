@@ -6,7 +6,8 @@ on:
 
 jobs:
   build:
-    name: Build for 体当たりゲーム
+    # 文字化けを防ぐため、ジョブ名から日本語を完全に排除
+    name: Build iOS App
     runs-on: macos-14
 
     steps:
@@ -27,12 +28,18 @@ jobs:
             sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*/IPHONEOS_DEPLOYMENT_TARGET = 13.0/g' Pods/Pods.xcodeproj/project.pbxproj
           fi
 
-      # 外部ライブラリのエラーを完全に無視してアプリのビルドを強行する設定
+      # ワークスペース名とスキーム名を自動検出してビルドを実行（文字化け対策）
       - name: Build Application
         run: |
+          WORKSPACE_FILE=$(ls -d *.xcworkspace | head -n 1)
+          SCHEME_NAME=$(basename "$WORKSPACE_FILE" .xcworkspace)
+          
+          echo "Detected Workspace: $WORKSPACE_FILE"
+          echo "Detected Scheme: $SCHEME_NAME"
+          
           xcodebuild build \
-                     -workspace "体当たりゲーム.xcworkspace" \
-                     -scheme "体当たりゲーム" \
+                     -workspace "$WORKSPACE_FILE" \
+                     -scheme "$SCHEME_NAME" \
                      -sdk iphonesimulator \
                      -arch x86_64 \
                      CODE_SIGNING_ALLOWED=NO \
