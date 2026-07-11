@@ -15,7 +15,7 @@ jobs:
     steps:
       # ステップ1: コードの取得
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # ステップ2: 使用するXcodeのバージョンを決定
       - name: Set up Xcode version
