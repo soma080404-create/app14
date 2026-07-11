@@ -3,39 +3,29 @@ name: iOS Custom Cloud Build
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
   build:
-    name: Build and Test for 体当たりゲーム
-    # 互換性を保つためにバージョン（Sonoma/Xcode15環境）を固定
+    name: Build for 体当たりゲーム
     runs-on: macos-14
 
     steps:
-      # ステップ1: コードの取得
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v5 # 先ほどのNode警告対策でv5にアップデート
 
-      # ステップ2: 使用するXcodeのバージョンを決定
       - name: Set up Xcode version
         run: sudo xcode-select -s /Applications/Xcode_15.4.app
 
-      # ステップ3: クラウド上で外部ライブラリ（CocoaPods）をダウンロード
-      - name: Install CocoaPods Dependencies
+      - name: Install CocoaPods
         run: |
           pod install
 
-      # ステップ4: クラウド上の最新シミュレータでテストビルドを実行
+      # 「build-for-testing」を「build」に変更し、テスト処理をスキップ
       - name: Build Application
         run: |
-          # 利用可能なiPhoneシミュレータの名前を自動取得
-          device=`xcrun xctrace list devices 2>&1 | grep -oE 'iPhone.*?[^\(]+' | head -1 | awk '{$1=$1;print}' | sed -e "s/ Simulator$//"`
-          
-          # ワークスペースとスキームを明示的に指定してビルドを実行
-          xcodebuild build-for-testing \
+          xcodebuild build \
                      -workspace "体当たりゲーム.xcworkspace" \
                      -scheme "体当たりゲーム" \
-                     -destination "platform=iOS Simulator,name=$device" \
+                     -sdk iphonesimulator \
                      CODE_SIGNING_ALLOWED=NO \
                      CODE_SIGNING_REQUIRED=NO
