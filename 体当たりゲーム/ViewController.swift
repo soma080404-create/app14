@@ -61,7 +61,7 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
         
         体当たりゲーム.webView.uiDelegate = self;
         
-        体当たりゲーム.webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
+        体当たりゲーム.webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: NSKeyValueObservingOptions.new, context: UnsafeMutableRawPointer?(nil))
 
         if(pullToRefresh){
             let refreshControl = UIRefreshControl()
