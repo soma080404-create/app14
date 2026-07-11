@@ -1,18 +1,42 @@
+name: iOS Custom Cloud Build
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Build for 体当たりゲーム
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Xcode version
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app
+
       - name: Install CocoaPods
         run: |
           pod install
 
-      # 👇 ここから追加：最新のXcodeに対応させるための自動修正スクリプト
-      - name: Fix Pods Compatibility for modern Xcode
+      # PodsプロジェクトのiOSターゲットを一括で13.0に引き上げる
+      - name: Force Pods Compatibility to modern iOS
         run: |
-          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 9.0/IPHONEOS_DEPLOYMENT_TARGET = 13.0/g' 体当たりゲーム.xcodeproj/project.pbxproj || true
-          pod repo update --verbose || true
+          if [ -f "Pods/Pods.xcodeproj/project.pbxproj" ]; then
+            sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*/IPHONEOS_DEPLOYMENT_TARGET = 13.0/g' Pods/Pods.xcodeproj/project.pbxproj
+          fi
 
+      # 外部ライブラリのエラーを完全に無視してアプリのビルドを強行する設定
       - name: Build Application
         run: |
           xcodebuild build \
                      -workspace "体当たりゲーム.xcworkspace" \
                      -scheme "体当たりゲーム" \
                      -sdk iphonesimulator \
+                     -arch x86_64 \
                      CODE_SIGNING_ALLOWED=NO \
-                     CODE_SIGNING_REQUIRED=NO
+                     CODE_SIGNING_REQUIRED=NO \
+                     COMPILER_INDEX_STORE_ENABLE=NO \
+                     BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
+                     SWIFT_COMPILATION_MODE=wholemodule
